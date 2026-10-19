@@ -1,0 +1,15 @@
+
+> book-reviews@0.1.0 dev
+> astro dev
+
+Another astro dev server is already running.
+
+  URL:  http://localhost:5050
+  PID:  45122
+
+Run `astro dev stop` to stop it, or use `astro dev --force` to replace it.
+  Location:
+    /Users/ryanlee/Desktop/clinic/arjun-book/node_modules/astro/dist/cli/dev/index.js:182:10
+  Stack trace:
+    at dev (file:///Users/ryanlee/Desktop/clinic/arjun-book/node_modules/astro/dist/cli/dev/index.js:182:10)
+    at async runCommand (file:///Users/ryanlee/Desktop/clinic/arjun-book/node_modules/astro/dist/cli/index.js:170:19)

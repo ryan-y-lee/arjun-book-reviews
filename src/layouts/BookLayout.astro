@@ -1,0 +1,212 @@
+---
+interface Props {
+	title?: string;
+	description?: string;
+}
+
+const {
+	title = "Book Reviews by Arjun",
+	description = "A small collection of book reviews by Arjun, shared with friends and family.",
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>{title}</title>
+		<meta name="description" content={description} />
+		<meta property="og:title" content={title} />
+		<meta property="og:description" content={description} />
+		<meta property="og:type" content="website" />
+		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+		<link
+			href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Inter:wght@400;500&display=swap"
+			rel="stylesheet"
+		/>
+	</head>
+	<body>
+		<slot />
+
+		<button id="to-top" type="button" aria-label="Back to top of reviews" hidden>
+			<span aria-hidden="true">&uarr;</span> Top
+		</button>
+
+		<script is:inline>
+			(() => {
+				const btn = document.getElementById("to-top");
+				if (!btn) return;
+
+				// Return to the top of the reviews rather than the hero, so the
+				// reader lands back on the list they were reading.
+				const anchor = document.getElementById("reviews");
+
+				const targetTop = () =>
+					anchor
+						? Math.max(
+								0,
+								anchor.getBoundingClientRect().top + window.scrollY,
+							)
+						: 0;
+
+				// Appear only once the reader is past the reviews heading, so it
+				// never shows while the button would scroll nowhere.
+				const update = () => {
+					const past = window.scrollY > targetTop() + 120;
+					btn.hidden = !past;
+					btn.classList.toggle("is-visible", past);
+				};
+
+				let queued = false;
+				window.addEventListener(
+					"scroll",
+					() => {
+						if (queued) return;
+						queued = true;
+						requestAnimationFrame(() => {
+							queued = false;
+							update();
+						});
+					},
+					{ passive: true },
+				);
+
+				btn.addEventListener("click", () => {
+					const reduced = window.matchMedia(
+						"(prefers-reduced-motion: reduce)",
+					).matches;
+					window.scrollTo({
+						top: targetTop(),
+						behavior: reduced ? "auto" : "smooth",
+					});
+					// Send focus somewhere sensible rather than leaving it on a
+					// button that is about to disappear.
+					const landing =
+						anchor?.querySelector(".label") ??
+						document.querySelector("h1");
+					if (landing) {
+						landing.setAttribute("tabindex", "-1");
+						landing.focus({ preventScroll: true });
+					}
+				});
+
+				update();
+			})();
+		</script>
+
+		<style is:global>
+			:root {
+				--page: #faf8f4;
+				--ink: #2b2522;
+				--ink-soft: #6d655f;
+				--rule: #e2dad0;
+				--serif: "Cormorant Garamond", Georgia, serif;
+				--sans: "Inter", system-ui, -apple-system, sans-serif;
+			}
+
+			* {
+				box-sizing: border-box;
+			}
+
+			html {
+				scroll-behavior: smooth;
+			}
+
+			body {
+				margin: 0;
+				background: var(--page);
+				color: var(--ink);
+				font-family: var(--sans);
+				font-size: 17px;
+				line-height: 1.7;
+				-webkit-font-smoothing: antialiased;
+			}
+
+			a {
+				color: inherit;
+			}
+
+			.wrap {
+				width: min(880px, 100% - 3rem);
+				margin-inline: auto;
+			}
+
+			.btn {
+				display: inline-block;
+				font-family: var(--sans);
+				font-size: 0.82rem;
+				letter-spacing: 0.14em;
+				text-transform: uppercase;
+				padding: 0.75rem 2.1rem;
+				border: 1px solid var(--ink);
+				border-radius: 999px;
+				text-decoration: none;
+				background: transparent;
+				transition: background 0.2s ease, color 0.2s ease;
+			}
+
+			.btn:hover {
+				background: var(--ink);
+				color: var(--page);
+			}
+
+			#to-top {
+				position: fixed;
+				right: 1.5rem;
+				bottom: 1.5rem;
+				z-index: 10;
+				display: inline-flex;
+				align-items: center;
+				gap: 0.4rem;
+				font-family: var(--sans);
+				font-size: 0.72rem;
+				letter-spacing: 0.14em;
+				text-transform: uppercase;
+				color: var(--ink);
+				padding: 0.6rem 1.1rem;
+				border: 1px solid var(--rule);
+				border-radius: 999px;
+				background: rgb(250 248 244 / 0.92);
+				backdrop-filter: blur(6px);
+				box-shadow: 0 2px 10px rgb(43 37 34 / 0.08);
+				cursor: pointer;
+				opacity: 0;
+				transform: translateY(0.5rem);
+				transition: opacity 0.2s ease, transform 0.2s ease,
+					background 0.2s ease, color 0.2s ease;
+			}
+
+			#to-top.is-visible {
+				opacity: 1;
+				transform: translateY(0);
+			}
+
+			#to-top:hover {
+				background: var(--ink);
+				color: var(--page);
+				border-color: var(--ink);
+			}
+
+			#to-top:focus-visible {
+				outline: 2px solid var(--ink);
+				outline-offset: 2px;
+			}
+
+			h1:focus-visible,
+			.label:focus-visible {
+				outline: none;
+			}
+
+			@media (prefers-reduced-motion: reduce) {
+				html {
+					scroll-behavior: auto;
+				}
+				* {
+					transition: none !important;
+				}
+			}
+		</style>
+	</body>
+</html>

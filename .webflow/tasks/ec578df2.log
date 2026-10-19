@@ -1,0 +1,19 @@
+
+> book-reviews@0.1.0 dev
+> astro dev --port 5050
+
+15:40:26 [vite] connected.
+15:40:26 [types] Generated 0ms
+15:40:26 [vite] connected.
+ astro  v7.4.1 ready in 152 ms
+┃ Local    http://localhost:5050/
+┃ Network  use --host to expose
+15:40:26 watching for file changes...
+15:40:36 [200] / 13ms
+15:40:36 [200] / 4ms
+15:40:36 [200] / 3ms
+15:40:42 [200] / 8ms
+15:40:52 [200] / 10ms
+15:42:44 [200] / 6ms
+15:43:15 [200] / 4ms
+15:43:44 [200] / 5ms

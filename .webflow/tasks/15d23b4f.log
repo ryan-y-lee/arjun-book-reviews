@@ -1,0 +1,22 @@
+
+> book-reviews@0.1.0 dev
+> astro dev
+
+15:35:57 [vite] connected.
+15:35:57 [types] Generated 0ms
+15:35:57 [vite] connected.
+ astro  v7.4.1 ready in 149 ms
+┃ Local    http://localhost:4321/
+┃ Network  use --host to expose
+15:35:57 watching for file changes...
+15:36:06 [200] / 15ms
+15:37:51 [watch] /src/pages/index.astro?astro&type=style&index=0&lang.css
+15:37:51 [watch] /src/layouts/BookLayout.astro?astro&type=style&index=0&lang.css
+15:37:51 [200] / 6ms
+15:38:13 [watch] src/components/ReviewList.astro
+15:38:13 [200] / 6ms
+15:38:23 [200] / 3ms
+15:38:26 [200] / 3ms
+15:38:35 [200] / 3ms
+15:38:35 [watch] .preview/snapshot.html
+15:38:51 [watch] .preview/snapshot.html

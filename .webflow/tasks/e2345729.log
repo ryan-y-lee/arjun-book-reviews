@@ -1,0 +1,21 @@
+
+> book-reviews@0.1.0 dev
+> astro dev
+
+15:33:07 [vite] connected.
+15:33:07 [types] Generated 0ms
+15:33:08 [vite] connected.
+15:33:08 [vite] Port 4321 is in use, trying another one...
+ astro  v7.4.1 ready in 154 ms
+┃ Local    http://localhost:4322/
+┃ Network  use --host to expose
+15:33:08 watching for file changes...
+15:33:17 [200] / 12ms
+15:33:23 [200] / 10ms
+15:33:41 [200] / 6ms
+15:33:41 [watch] .preview/snapshot.html
+15:34:05 [watch] .preview/snapshot.html
+15:34:06 [200] / 10ms
+15:34:07 [200] / 3ms
+15:34:51 [200] / 13ms
+15:34:52 [200] / 12ms

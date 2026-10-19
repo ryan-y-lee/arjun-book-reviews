@@ -1,0 +1,73 @@
+---
+import BookLayout from "../layouts/BookLayout.astro";
+import ReviewList from "../components/ReviewList.astro";
+
+const base = import.meta.env.BASE_URL.replace(/\/$/, "");
+---
+
+<BookLayout>
+	<section class="hero">
+		<div class="wrap">
+			<img
+				class="mark"
+				src={`${base}/books.png`}
+				alt="A stack of books with a flower resting on top"
+				width="640"
+				height="580"
+			/>
+
+			<h1>Book Reviews by Arjun</h1>
+
+			<a class="btn" href="#reviews">Reviews</a>
+		</div>
+	</section>
+
+	<section id="reviews" class="list">
+		<div class="wrap">
+			<p class="label">All reviews</p>
+			<ReviewList />
+		</div>
+	</section>
+</BookLayout>
+
+<style>
+	.hero {
+		/* Fill the screen so "Reviews" is a real scroll, not a nudge. svh
+		   accounts for mobile browser chrome; vh is the fallback. */
+		min-height: 100vh;
+		min-height: 100svh;
+		display: grid;
+		place-items: center;
+		text-align: center;
+		padding: 2rem 0;
+	}
+
+	.mark {
+		width: min(260px, 60%);
+		height: auto;
+		margin: 0 auto clamp(1.25rem, 3vw, 2rem);
+		display: block;
+		mix-blend-mode: multiply;
+	}
+
+	h1 {
+		margin: 0 0 clamp(2rem, 5vw, 3rem);
+		font-family: var(--serif);
+		font-weight: 500;
+		font-size: clamp(2.4rem, 6.5vw, 4rem);
+		letter-spacing: 0.01em;
+		text-wrap: balance;
+	}
+
+	.list {
+		padding-bottom: clamp(5rem, 10vw, 8rem);
+	}
+
+	.label {
+		margin: 0 0 clamp(2rem, 5vw, 3rem);
+		font-size: 0.75rem;
+		letter-spacing: 0.2em;
+		text-transform: uppercase;
+		color: var(--ink-soft);
+	}
+</style>

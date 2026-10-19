@@ -1,0 +1,332 @@
+---
+import { reviews } from "../data/reviews";
+import covers from "../../public/covers/manifest.json";
+
+/**
+ * Must stay in sync with slugify() in scripts/fetch-covers.mjs — that script
+ * names the files, this looks them up. A title with no entry in the manifest
+ * falls back to the plain paper gradient.
+ */
+const slugify = (title: string) =>
+	title
+		.toLowerCase()
+		.normalize("NFD")
+		.replace(/[\u0300-\u036f]/g, "")
+		.replace(/[^a-z0-9]+/g, "-")
+		.replace(/^-+|-+$/g, "")
+		.slice(0, 60);
+
+const coverMap = covers as Record<string, string>;
+const coverFor = (title: string) => coverMap[slugify(title)];
+
+const base = import.meta.env.BASE_URL.replace(/\/$/, "");
+
+const genres = [
+	"All",
+	...Array.from(new Set(reviews.flatMap((r) => r.genres))).sort(),
+];
+
+const sorted = [...reviews].sort((a, b) => b.date.localeCompare(a.date));
+
+const fmt = (iso: string) =>
+	new Date(`${iso}T00:00:00`).toLocaleDateString("en-US", {
+		month: "long",
+		day: "numeric",
+		year: "numeric",
+	});
+---
+
+<div class="search">
+	<label class="sr-only" for="review-search">Search reviews by book title</label>
+	<input
+		id="review-search"
+		type="search"
+		placeholder="Search by book title"
+		autocomplete="off"
+	/>
+</div>
+
+<div class="filters" role="group" aria-label="Filter reviews by genre">
+	{genres.map((g, i) => (
+		<button type="button" class={i === 0 ? "chip on" : "chip"} data-genre={g}>
+			{g}
+		</button>
+	))}
+</div>
+
+<ol class="reviews">
+	{sorted.map((r) => (
+		<li class="review" data-genres={r.genres.join("|")} data-title={r.title.toLowerCase()}>
+			{coverFor(r.title) ? (
+				<img
+					class="cover"
+					src={`${base}/covers/${coverFor(r.title)}`}
+					alt={`Cover of ${r.title}`}
+					loading="lazy"
+					decoding="async"
+				/>
+			) : (
+				<div class="cover" aria-hidden="true"></div>
+			)}
+
+			<div class="body">
+				<div class="head">
+					<h3>{r.title}</h3>
+					<span class="author">{r.author}</span>
+				</div>
+
+				<div class="meta">
+					{r.stars > 0 ? (
+						<span class="stars" aria-label={`${r.stars} out of 5 stars`}>
+							{[1, 2, 3, 4, 5].map((n) => (
+								<span class={n <= r.stars ? "star on" : "star"}>★</span>
+							))}
+						</span>
+					) : (
+						<span class="unrated">Unrated</span>
+					)}
+					<span class="dot" aria-hidden="true">·</span>
+					<span class="genre">{r.genres.join(", ")}</span>
+					<span class="dot" aria-hidden="true">·</span>
+					<time datetime={r.date}>Reviewed {fmt(r.date)}</time>
+				</div>
+
+				{r.text ? (
+					<p>{r.text}</p>
+				) : (
+					<p class="none">No written review</p>
+				)}
+			</div>
+		</li>
+	))}
+</ol>
+
+<p class="empty" hidden>No reviews in this genre yet.</p>
+
+<script>
+	const chips = document.querySelectorAll<HTMLButtonElement>(".chip");
+	const items = document.querySelectorAll<HTMLLIElement>(".review");
+	const empty = document.querySelector<HTMLParagraphElement>(".empty");
+	const search = document.querySelector<HTMLInputElement>("#review-search");
+
+	let genre = "All";
+	let query = "";
+
+	const apply = () => {
+		let shown = 0;
+
+		items.forEach((item) => {
+			const list = (item.dataset.genres || "").split("|");
+			const inGenre = genre === "All" || list.includes(genre);
+			const inQuery = !query || (item.dataset.title || "").includes(query);
+			const match = inGenre && inQuery;
+
+			item.hidden = !match;
+			if (match) shown++;
+		});
+
+		if (empty) {
+			empty.textContent = query
+				? "No reviews match that title."
+				: "No reviews in this genre yet.";
+			empty.hidden = shown > 0;
+		}
+	};
+
+	chips.forEach((chip) => {
+		chip.addEventListener("click", () => {
+			genre = chip.dataset.genre || "All";
+			chips.forEach((c) => c.classList.toggle("on", c === chip));
+			apply();
+		});
+	});
+
+	search?.addEventListener("input", () => {
+		query = search.value.trim().toLowerCase();
+		apply();
+	});
+</script>
+
+<style>
+	.sr-only {
+		position: absolute;
+		width: 1px;
+		height: 1px;
+		padding: 0;
+		margin: -1px;
+		overflow: hidden;
+		clip: rect(0 0 0 0);
+		white-space: nowrap;
+		border: 0;
+	}
+
+	.search {
+		margin-bottom: 1rem;
+	}
+
+	.search input {
+		width: 100%;
+		max-width: 24rem;
+		font: inherit;
+		font-size: 0.9rem;
+		color: var(--ink);
+		padding: 0.6rem 0.2rem;
+		border: 0;
+		border-bottom: 1px solid var(--rule);
+		border-radius: 0;
+		background: transparent;
+		transition: border-color 0.2s ease;
+	}
+
+	.search input::placeholder {
+		color: var(--ink-soft);
+		opacity: 0.7;
+	}
+
+	.search input:focus {
+		outline: none;
+		border-bottom-color: var(--ink);
+	}
+
+	.filters {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.4rem;
+		margin-bottom: clamp(2.5rem, 6vw, 4rem);
+	}
+
+	.chip {
+		font: inherit;
+		font-size: 0.66rem;
+		letter-spacing: 0.12em;
+		text-transform: uppercase;
+		padding: 0.42rem 0.95rem;
+		border: 1px solid var(--ink);
+		border-radius: 999px;
+		background: transparent;
+		color: var(--ink);
+		cursor: pointer;
+		transition: background 0.2s ease, color 0.2s ease;
+	}
+
+	.chip:hover {
+		background: var(--ink);
+		color: var(--page);
+	}
+
+	.chip.on {
+		background: var(--ink);
+		border-color: var(--ink);
+		color: var(--page);
+	}
+
+	.reviews {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+		display: grid;
+		gap: clamp(3rem, 6vw, 4.5rem);
+	}
+
+	.review {
+		display: grid;
+		grid-template-columns: 110px 1fr;
+		gap: clamp(1.5rem, 4vw, 2.5rem);
+		align-items: start;
+	}
+
+	.review[hidden] {
+		display: none;
+	}
+
+	.cover {
+		width: 100%;
+		aspect-ratio: 2 / 3;
+		border: 1px solid var(--rule);
+		border-radius: 3px;
+		background: linear-gradient(160deg, #fffdf9, #efe8de);
+	}
+
+	/* Covers vary in proportion; fill the frame rather than distorting. */
+	img.cover {
+		display: block;
+		height: auto;
+		object-fit: cover;
+		box-shadow: 0 1px 6px rgb(43 37 34 / 0.1);
+	}
+
+	.head {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: baseline;
+		gap: 0.3rem 0.9rem;
+		padding-bottom: 0.6rem;
+		border-bottom: 1px solid var(--rule);
+	}
+
+	h3 {
+		margin: 0;
+		font-family: var(--serif);
+		font-weight: 600;
+		font-size: clamp(1.35rem, 2.4vw, 1.75rem);
+		letter-spacing: 0.01em;
+		text-wrap: balance;
+	}
+
+	.author {
+		font-size: 0.78rem;
+		letter-spacing: 0.16em;
+		text-transform: uppercase;
+		color: var(--ink-soft);
+	}
+
+	.meta {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: 0.55rem;
+		margin: 0.7rem 0 0.9rem;
+		font-size: 0.78rem;
+		letter-spacing: 0.16em;
+		text-transform: uppercase;
+		color: var(--ink-soft);
+	}
+
+	.stars {
+		letter-spacing: 0.2em;
+		font-size: 0.9rem;
+		color: var(--rule);
+	}
+
+	.star.on {
+		color: var(--ink);
+	}
+
+	.dot {
+		opacity: 0.5;
+	}
+
+	p {
+		margin: 0;
+		color: var(--ink-soft);
+		max-width: 60ch;
+		white-space: pre-line;
+	}
+
+	.none {
+		font-style: italic;
+		opacity: 0.6;
+	}
+
+	.empty {
+		margin-top: 2rem;
+		font-size: 0.85rem;
+		color: var(--ink-soft);
+	}
+
+	@media (max-width: 540px) {
+		.review {
+			grid-template-columns: 78px 1fr;
+		}
+	}
+</style>
