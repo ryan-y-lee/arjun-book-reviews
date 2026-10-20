@@ -14,21 +14,27 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
 
 			<h1>A note</h1>
 
+
 			<div class="prose">
 				<p>
-					After Arjun passed, I stumbled upon these book reviews and
-					found them comforting. They capture who he was so well:
+					After Arjun passed, I stumbled upon these book reviews
+					again and found them comforting. They capture who he was so well:
 					thoughtful, silly, and profound. Many of his family and
-					friends remember his intellectual curiosity, and these
-					reviews let me hear his voice again. I hope reading
-					them&mdash;and perhaps picking up some of these
-					books&mdash;helps you feel connected to him, too. His
-					thoughts are still here, and there is so much more we can
-					learn from him.
+					friends remember him for his intellectual curiosity, and
+					these reviews let me hear his voice again. I hope reading
+					them, and perhaps picking up some of these books, helps
+					you feel connected to him too. His
+					thoughts are still here, and there is still so much more
+					we can learn from him.
 				</p>
 
+				<p class="signature">&mdash; Ryan Lee</p>
+
 				<p class="source">
-					All the reviews come from his Goodreads account. The ratings
+					All the reviews come from his <a
+						href="https://www.goodreads.com/user/show/154312131-arjun-v"
+						target="_blank"
+						rel="noopener noreferrer">Goodreads account</a>. The ratings
 					and writing are preserved exactly as he left them&mdash;emojis,
 					typos, line breaks, and all.
 				</p>
@@ -41,14 +47,18 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
 
 <style>
 	.note-page {
-		/* Comfortable room at the top without pushing the first line
-		   below the fold. */
-		padding: clamp(3rem, 9vh, 6rem) 0 clamp(4rem, 12vh, 7rem);
+		/* The note is meant to be read in one sitting: hold it to a single
+		   screen so nothing scrolls out of view. */
+		min-height: 100svh;
+		display: flex;
+		align-items: center;
+		padding: clamp(2rem, 6vh, 4rem) 0;
+		overflow: hidden;
 	}
 
 	.back {
 		display: inline-block;
-		margin-bottom: clamp(2.5rem, 7vw, 4rem);
+		margin-bottom: clamp(1.25rem, 4vh, 2.25rem);
 		font-family: var(--sans);
 		font-size: 0.78rem;
 		letter-spacing: 0.1em;
@@ -63,10 +73,10 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
 	}
 
 	h1 {
-		margin: 0 0 clamp(1.75rem, 4vw, 2.5rem);
+		margin: 0 0 clamp(1rem, 3vh, 1.75rem);
 		font-family: var(--serif);
 		font-weight: 500;
-		font-size: clamp(2rem, 5vw, 2.9rem);
+		font-size: clamp(1.75rem, 4vw, 2.6rem);
 		letter-spacing: 0.01em;
 	}
 
@@ -77,22 +87,43 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
 	}
 
 	.prose p {
-		margin: 0 0 1.4em;
+		margin: 0 0 1.1em;
 		font-family: var(--serif);
-		font-size: clamp(1.1rem, 2.4vw, 1.35rem);
-		line-height: 1.7;
+		font-size: clamp(1.05rem, 2.2vw, 1.3rem);
+		line-height: 1.6;
 		text-wrap: pretty;
 	}
 
 	/* A quieter aside: it explains where the reviews came from rather
 	   than continuing the thought above it. */
 	.source {
-		margin-top: clamp(1.75rem, 4vw, 2.5rem);
-		font-size: clamp(1rem, 2.1vw, 1.15rem) !important;
+		margin-top: clamp(1rem, 3vh, 1.75rem);
+		font-size: clamp(0.95rem, 1.9vw, 1.1rem) !important;
 		color: var(--ink-soft);
 	}
 
+	/* Signing the note rather than labelling the page: it names the
+	   voice without turning the page into a credit. */
+	.signature {
+		/* Full paragraph color and size: the signature belongs to the note
+		   above it, not to the quieter aside below. */
+		margin: 0 0 clamp(1rem, 3vh, 1.75rem) !important;
+		color: var(--ink);
+	}
+
+	.source a {
+		color: inherit;
+		text-decoration: underline;
+		text-decoration-thickness: 1px;
+		text-underline-offset: 0.18em;
+		transition: color 0.2s ease;
+	}
+
+	.source a:hover {
+		color: var(--ink);
+	}
+
 	.prose p:last-child {
-		margin-bottom: clamp(2.5rem, 7vw, 3.5rem);
+		margin-bottom: clamp(1.5rem, 4vh, 2.5rem);
 	}
 </style>

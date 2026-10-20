@@ -66,7 +66,7 @@ const fmt = (iso: string) =>
 					decoding="async"
 				/>
 			) : (
-				<div class="cover" aria-hidden="true"></div>
+				<div class="cover cover-empty"><span>No cover</span></div>
 			)}
 
 			<div class="body">
@@ -245,6 +245,24 @@ const fmt = (iso: string) =>
 		border: 1px solid var(--rule);
 		border-radius: 3px;
 		background: linear-gradient(160deg, #fffdf9, #efe8de);
+	}
+
+	/* Say so plainly when no cover was found, rather than leaving an
+	   empty gradient the reader has to interpret. */
+	.cover-empty {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		padding: 0.5rem;
+	}
+
+	.cover-empty span {
+		font-family: var(--sans);
+		font-size: 0.62rem;
+		letter-spacing: 0.12em;
+		text-transform: uppercase;
+		color: var(--ink-soft);
+		text-align: center;
 	}
 
 	/* Covers vary in proportion; fill the frame rather than distorting. */
