@@ -18,6 +18,13 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
 
 			<h1>Book Reviews by Arjun</h1>
 
+			<p class="dedication">
+				<a href={`${base}/note`}
+					>For those who miss having conversations with Arjun and
+					hearing his inner thoughts</a
+				>
+			</p>
+
 			<a class="btn" href="#reviews">Reviews</a>
 		</div>
 	</section>
@@ -37,13 +44,16 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
 		min-height: 100vh;
 		min-height: 100svh;
 		display: grid;
-		place-items: center;
+		/* Sit the group above center so the extra room collects at the
+		   bottom, rather than splitting evenly above and below. */
+		align-content: start;
+		justify-items: center;
 		text-align: center;
-		padding: 2rem 0;
+		padding: clamp(2.5rem, 7vh, 5rem) 0 2rem;
 	}
 
 	.mark {
-		width: min(260px, 60%);
+		width: min(200px, 46%);
 		height: auto;
 		margin: 0 auto clamp(1.25rem, 3vw, 2rem);
 		display: block;
@@ -51,12 +61,45 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
 	}
 
 	h1 {
-		margin: 0 0 clamp(2rem, 5vw, 3rem);
+		margin: 0 0 clamp(1.25rem, 3vw, 1.75rem);
 		font-family: var(--serif);
 		font-weight: 500;
 		font-size: clamp(2.4rem, 6.5vw, 4rem);
 		letter-spacing: 0.01em;
 		text-wrap: balance;
+	}
+
+	.dedication {
+		max-width: 100%;
+		margin: 0 auto clamp(1.9rem, 4.5vw, 2.6rem);
+		font-family: var(--serif);
+		font-size: clamp(0.95rem, 1.9vw, 1.05rem);
+		font-style: italic;
+		line-height: 1.5;
+		color: var(--ink-soft);
+		text-wrap: pretty;
+	}
+
+	/* Underlined from the start, so it reads as a link rather than
+	   hiding its own invitation until hover. */
+	.dedication a {
+		color: inherit;
+		text-decoration: underline;
+		text-decoration-color: var(--rule);
+		text-decoration-thickness: 1px;
+		text-underline-offset: 0.28em;
+		transition: color 0.2s ease, text-decoration-color 0.2s ease;
+	}
+
+	.dedication a:hover {
+		color: var(--ink);
+		text-decoration-color: var(--ink);
+	}
+
+	.dedication a:focus-visible {
+		outline: 2px solid var(--ink);
+		outline-offset: 4px;
+		border-radius: 2px;
 	}
 
 	.list {

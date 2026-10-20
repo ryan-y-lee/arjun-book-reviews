@@ -1,3 +1,10 @@
 node_modules/
 dist/
 .astro/
+
+# macOS folder metadata
+.DS_Store
+
+# Local Source/editor working files
+.webflow/
+.lookup/
